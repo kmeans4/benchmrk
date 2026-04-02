@@ -1,0 +1,194 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// Core Models
+// ============================================
+
+model Model {
+  id                String   @id @default(cuid())
+  name              String
+  provider          String
+  releaseDate       DateTime?
+  contextWindow     Int?     // in tokens
+  parameterCount    BigInt?  // model size in parameters
+  licenseType       LicenseType
+  hostingType       HostingType
+  modalities        Modality[]
+  hardwareRequirements String?  // e.g., "24GB VRAM for 70B"
+  knowledgeCutoff   DateTime?
+  architecture      String?  // e.g., "MoE", "Dense", "Hybrid"
+  trainingDataSource String?
+  inferenceCostPer1M String? // e.g., "$0.50/1M input, $1.50/1M output"
+  quantizationOptions String? // e.g., "FP16, INT8, INT4"
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  scores            Score[]
+  categories        Category[]
+  skillAreas        SkillArea[]
+
+  @@index([name])
+  @@index([provider])
+  @@index([licenseType])
+  @@index([hostingType])
+}
+
+model Benchmark {
+  id                String   @id @default(cuid())
+  name              String
+  category          String
+  skillArea         SkillArea @relation(fields: [skillAreaId], references: [id])
+  skillAreaId       String
+  description       String?
+  license           String?  // benchmark license
+  evaluationMethod  EvaluationMethod
+  scoreType         ScoreType
+  scoreInterpretation String // "higher=better" or "lower=better"
+  sourceUrl         String?
+  leaderboardUrl    String?
+  lastUpdated       DateTime?
+  modelCount        Int      // number of models evaluated
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  scores            Score[]
+  sources           Source[]
+
+  @@index([name])
+  @@index([category])
+  @@index([skillAreaId])
+}
+
+model Score {
+  id                String   @id @default(cuid())
+  modelId           String
+  benchmarkId       String
+  value             Float
+  scoreDate         DateTime? // when this score was achieved/recorded
+  sourceId          String?
+  isVerified        Boolean  @default(false) // independent verification vs self-reported
+  notes             String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  model             Model    @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  benchmark         Benchmark @relation(fields: [benchmarkId], references: [id], onDelete: Cascade)
+  source            Source?  @relation(fields: [sourceId], references: [id])
+
+  @@unique([modelId, benchmarkId, sourceId])
+  @@index([modelId])
+  @@index([benchmarkId])
+  @@index([value])
+}
+
+// ============================================
+// Classification Tables
+// ============================================
+
+model SkillArea {
+  id                String   @id @default(cuid())
+  name              String   @unique // e.g., "Coding", "Reasoning", "Creative Writing"
+  description       String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  benchmarks        Benchmark[]
+  models            Model[]
+  categories        Category[]
+
+  @@index([name])
+}
+
+model Category {
+  id                String   @id @default(cuid())
+  name              String   @unique // e.g., "Agentic Terminal Coding", "Math Word Problems"
+  skillAreaId       String
+  description       String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  skillArea         SkillArea @relation(fields: [skillAreaId], references: [id])
+  models            Model[]
+
+  @@index([name])
+  @@index([skillAreaId])
+}
+
+// ============================================
+// Supporting Tables
+// ============================================
+
+model Source {
+  id                String   @id @default(cuid())
+  name              String   // e.g., "LMSys Arena", "Hugging Face Leaderboard"
+  url               String?
+  reliability       Reliability @default(Unknown)
+  isOfficial        Boolean  @default(false) // from model provider directly
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  scores            Score[]
+  benchmarks        Benchmark[]
+
+  @@index([name])
+}
+
+// ============================================
+// Enum Types
+// ============================================
+
+enum LicenseType {
+  OpenWeights
+  Proprietary
+  ResearchOnly
+  CommercialAllowed
+  Unknown
+}
+
+enum HostingType {
+  CloudOnly
+  LocalOnly
+  Both
+  Unknown
+}
+
+enum Modality {
+  Text
+  Image
+  Audio
+  Video
+  Code
+}
+
+enum EvaluationMethod {
+  Automatic
+  HumanJudged
+  Mixed
+  Unknown
+}
+
+enum ScoreType {
+  Accuracy
+  PassAtK
+  Elo
+  Percentage
+  Raw
+  Normalized
+  Unknown
+}
+
+enum Reliability {
+  High
+  Medium
+  Low
+  Unknown
+}
