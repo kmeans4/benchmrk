@@ -17,7 +17,12 @@ interface ActiveChip {
   onRemove: () => void
 }
 
-const DISPLAY_MODES = ['value', 'heatmap', 'bars', 'sparkline'] as const
+const DISPLAY_MODES = [
+  { value: 'value', mobileLabel: 'Value', desktopLabel: 'Value' },
+  { value: 'heatmap', mobileLabel: 'Heat', desktopLabel: 'Heatmap' },
+  { value: 'bars', mobileLabel: 'Bars', desktopLabel: 'Bars' },
+  { value: 'sparkline', mobileLabel: 'Trend', desktopLabel: 'Sparkline' },
+] as const
 
 function formatHostingType(type: string) {
   if (type === 'CloudOnly') return 'Cloud'
@@ -197,16 +202,16 @@ export function FilterBar() {
   }
 
   return (
-    <div className="sticky top-[var(--layout-nav-height)] z-40 pt-1 md:pt-2">
-      <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.065)_0%,rgba(255,255,255,0.04)_100%)] shadow-[0_16px_48px_rgba(0,0,0,0.34)] backdrop-blur-xl">
-        <div className="flex flex-col gap-4 px-4 py-4 md:px-5 md:py-5 lg:grid lg:min-h-[var(--layout-filter-height)] lg:grid-cols-[minmax(260px,300px)_minmax(0,1fr)_auto] lg:items-center lg:gap-5 lg:px-5 lg:py-2 xl:px-6">
+    <div className="sticky top-[var(--layout-nav-height)] z-40 pt-2 md:pt-3">
+      <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.065)_0%,rgba(255,255,255,0.04)_100%)] shadow-[0_18px_54px_rgba(0,0,0,0.34)] backdrop-blur-xl md:rounded-[30px]">
+        <div className="flex flex-col gap-4 px-4 py-4 sm:px-5 sm:py-5 lg:grid lg:min-h-[var(--layout-filter-height)] lg:grid-cols-[minmax(270px,320px)_minmax(0,1fr)_auto] lg:items-center lg:gap-6 lg:px-6 lg:py-3">
           <div className="relative min-w-0 lg:pr-1">
             <input
               type="text"
               placeholder="Search models or providers"
               value={filters.modelSearch}
               onChange={(event) => setFilter('modelSearch', event.target.value)}
-              className="h-11 w-full rounded-[16px] border border-white/10 bg-white/[0.05] pl-11 pr-4 text-sm text-white placeholder:text-white/35 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] focus:border-cyan-500/45 focus:bg-white/[0.08] lg:h-10"
+              className="h-12 w-full rounded-[18px] border border-white/10 bg-white/[0.05] pl-11 pr-4 text-sm text-white placeholder:text-white/35 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] focus:border-cyan-500/45 focus:bg-white/[0.08] lg:h-11"
             />
             <svg
               className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35"
@@ -224,8 +229,8 @@ export function FilterBar() {
           </div>
 
           <div className="min-w-0 lg:px-1 xl:px-2">
-            <div className="flex min-h-11 items-center overflow-hidden rounded-[20px] border border-white/8 bg-white/[0.03] px-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] lg:min-h-10">
-              <div className="flex max-w-full flex-1 items-center justify-start gap-1.5 overflow-x-auto py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:justify-center">
+            <div className="flex min-h-12 items-center overflow-hidden rounded-[22px] border border-white/8 bg-white/[0.03] px-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] lg:min-h-11">
+              <div className="flex max-w-full flex-1 items-center justify-start gap-1.5 overflow-x-auto py-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:justify-start">
                 <AnimatePresence initial={false} mode="popLayout">
                   {activeChips.map((chip) => (
                     <FilterChip
@@ -245,19 +250,20 @@ export function FilterBar() {
             </div>
           </div>
 
-          <div className="flex min-w-0 flex-col gap-2.5 lg:flex-row lg:items-center lg:justify-end lg:gap-2.5">
-            <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+          <div className="flex min-w-0 flex-col gap-3 lg:min-w-[23rem] lg:items-end">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 sm:flex sm:flex-wrap sm:items-center sm:justify-end">
               <button
                 type="button"
                 onClick={() => toggleFilterPanel()}
                 className={cn(
-                  'inline-flex h-10 items-center justify-center rounded-[14px] border px-4 text-sm font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] active:scale-[0.98]',
+                  'inline-flex h-11 items-center justify-center rounded-[15px] border px-4 text-sm font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] active:scale-[0.98] sm:h-10',
                   isFilterPanelOpen
                     ? 'border-violet-500/50 bg-violet-500/20 text-violet-200'
                     : 'border-white/10 bg-white/[0.04] text-white/75 hover:border-white/20 hover:bg-white/[0.06] hover:text-white'
                 )}
               >
-                Filters
+                <span className="sm:hidden">More filters</span>
+                <span className="hidden sm:inline">Filters</span>
                 {activeFilterCount > 0 && (
                   <span className="ml-2 inline-flex min-w-5 items-center justify-center rounded-full bg-violet-500 px-1.5 text-[11px] font-semibold text-white shadow-[0_6px_14px_rgba(124,58,237,0.35)]">
                     {activeFilterCount}
@@ -269,7 +275,7 @@ export function FilterBar() {
                 <button
                   type="button"
                   onClick={handleClearAll}
-                  className="inline-flex h-10 items-center justify-center rounded-[14px] px-3.5 text-sm text-white/55 active:scale-[0.98] hover:text-white"
+                  className="hidden h-10 items-center justify-center rounded-[14px] px-3.5 text-sm text-white/55 active:scale-[0.98] hover:text-white sm:inline-flex"
                 >
                   Clear all
                 </button>
@@ -278,26 +284,38 @@ export function FilterBar() {
               <button
                 type="button"
                 onClick={handleExport}
-                className="inline-flex h-10 items-center justify-center rounded-[14px] border border-white/10 bg-white/[0.04] px-4 text-sm text-white/75 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] active:scale-[0.98] hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
+                className="inline-flex h-11 items-center justify-center rounded-[15px] border border-white/10 bg-white/[0.04] px-4 text-sm text-white/75 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] active:scale-[0.98] hover:border-white/20 hover:bg-white/[0.06] hover:text-white sm:h-10"
               >
-                Export CSV
+                <span className="sm:hidden">Export</span>
+                <span className="hidden sm:inline">Export CSV</span>
               </button>
             </div>
 
-            <div className="grid w-full grid-cols-2 gap-1.5 rounded-[18px] border border-white/10 bg-white/[0.04] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:grid-cols-4 lg:w-auto lg:min-w-[19rem]">
+            {activeChips.length > 0 && (
+              <button
+                type="button"
+                onClick={handleClearAll}
+                className="inline-flex h-10 items-center justify-center self-start rounded-[14px] px-1 text-sm text-white/55 active:scale-[0.98] hover:text-white sm:hidden"
+              >
+                Clear all filters
+              </button>
+            )}
+
+            <div className="hidden w-full gap-2 overflow-x-auto rounded-[18px] border border-white/10 bg-white/[0.04] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:flex lg:w-auto lg:min-w-[22rem] lg:justify-end">
               {DISPLAY_MODES.map((mode) => (
                 <button
-                  key={mode}
+                  key={mode.value}
                   type="button"
-                  onClick={() => setScoreDisplay(mode)}
+                  onClick={() => setScoreDisplay(mode.value)}
                   className={cn(
-                    'rounded-[12px] px-3 py-2 text-[11px] font-semibold tracking-[0.14em] uppercase active:scale-[0.98]',
-                    scoreDisplay === mode
+                    'min-w-[4.5rem] flex-1 rounded-[13px] px-3 py-2.5 text-[11px] font-semibold tracking-[0.08em] whitespace-nowrap active:scale-[0.98] sm:min-w-[5rem] lg:min-w-0',
+                    scoreDisplay === mode.value
                       ? 'bg-cyan-500/18 text-cyan-200 shadow-[0_8px_18px_rgba(6,182,212,0.18)]'
                       : 'text-white/45 hover:text-white/80'
                   )}
                 >
-                  {mode}
+                  <span className="sm:hidden">{mode.mobileLabel}</span>
+                  <span className="hidden sm:inline">{mode.desktopLabel}</span>
                 </button>
               ))}
             </div>

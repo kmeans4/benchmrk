@@ -11,10 +11,11 @@ import {
 } from '@/store/benchmarkStore'
 import { GridHeader } from './GridHeader'
 import { GridRow } from './GridRow'
+import { MobileBenchmarkCards } from './MobileBenchmarkCards'
 
 const MODEL_COLUMN_WIDTH = 220
-const BENCHMARK_COLUMN_WIDTH = 120
-const ROW_HEIGHT = 92
+const BENCHMARK_COLUMN_WIDTH = 128
+const ROW_HEIGHT = 96
 
 export function BenchmarkGrid() {
   const parentRef = useRef<HTMLDivElement>(null)
@@ -92,7 +93,9 @@ export function BenchmarkGrid() {
     : undefined
 
   const contentWidth = MODEL_COLUMN_WIDTH + visibleBenchmarks.length * BENCHMARK_COLUMN_WIDTH
+  const desktopViewportHeight = Math.min(Math.max(sortedGrid.length * ROW_HEIGHT + 112, 300), 760)
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
     count: sortedGrid.length,
     getScrollElement: () => parentRef.current,
@@ -121,10 +124,20 @@ export function BenchmarkGrid() {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col rounded-[28px] border border-white/8 bg-[#090a10]/50 p-2.5 md:p-3.5">
+    <div className="flex min-h-0 w-full flex-col rounded-[28px] border border-white/8 bg-[#090a10]/50 p-2.5 md:rounded-[30px] md:p-3.5">
+      <MobileBenchmarkCards
+        models={sortedGrid}
+        benchmarks={visibleBenchmarks}
+        scores={scores}
+        scoreRanges={scoreRanges}
+        activeModel={activeModel}
+        onToggleModel={(modelId) => setActiveModel(activeModel === modelId ? null : modelId)}
+      />
+
       <div
         ref={parentRef}
-        className="min-h-0 flex-1 overflow-auto rounded-[24px] border border-white/7 bg-[#0a0b11]/60 p-2 overscroll-contain shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] [scrollbar-gutter:stable_both-edges] md:p-3"
+        className="hidden overflow-auto rounded-[24px] border border-white/7 bg-[#0a0b11]/60 p-2 overscroll-contain shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] [scrollbar-gutter:stable_both-edges] md:block md:p-3"
+        style={{ height: desktopViewportHeight }}
       >
         <div className="relative min-w-full pb-3" style={{ width: contentWidth }}>
           <GridHeader

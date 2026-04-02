@@ -31,7 +31,7 @@ export const ScoreCell = memo(function ScoreCell({
 
   const color = getScoreColor(normalized)
   const sharedClasses = cn(
-    'relative flex h-[52px] w-full items-center justify-center overflow-hidden rounded-[18px] border px-3 font-mono text-[13px] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition-[border-color,background-color,box-shadow,transform] duration-200',
+    'relative flex h-[56px] w-full items-center justify-center overflow-hidden rounded-[18px] border px-3 font-mono text-[13px] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition-[border-color,background-color,box-shadow,transform] duration-200',
     className
   )
 
@@ -144,7 +144,7 @@ export function EmptyScoreCell({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'flex h-[52px] w-full items-center justify-center rounded-[18px] border border-dashed border-white/6 bg-white/[0.02] px-2 font-mono text-sm text-white/20',
+        'flex h-[56px] w-full items-center justify-center rounded-[18px] border border-dashed border-white/6 bg-white/[0.02] px-2 font-mono text-sm text-white/20',
         className
       )}
     >

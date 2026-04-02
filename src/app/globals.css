@@ -11,9 +11,17 @@
   --layout-shell-max: 1600px;
   --layout-nav-height: 4rem;
   --layout-filter-height: 3.5rem;
-  --layout-page-gutter: clamp(1rem, 2vw, 2rem);
-  --layout-section-gap: clamp(1rem, 1.8vw, 1.5rem);
-  --layout-shell-padding: clamp(0.75rem, 1.2vw, 1.25rem);
+  --layout-page-gutter: clamp(1rem, 3vw, 2.75rem);
+  --layout-section-gap: clamp(1.125rem, 2vw, 2rem);
+  --layout-shell-padding: clamp(0.8rem, 1.35vw, 1.35rem);
+}
+
+@media (max-width: 767px) {
+  :root {
+    --layout-page-gutter: clamp(0.875rem, 4vw, 1.125rem);
+    --layout-section-gap: 1rem;
+    --layout-shell-padding: 0.7rem;
+  }
 }
 
 @theme inline {
