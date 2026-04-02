@@ -14,17 +14,17 @@ export default function Home() {
       </div>
 
       <div className="relative flex min-h-screen flex-col">
-        <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0b0b10]/80 shadow-[0_10px_30px_rgba(0,0,0,0.28)] backdrop-blur-xl">
-          <div className="mx-auto flex h-14 w-full max-w-[1600px] items-center justify-between gap-4 px-4 md:px-6">
+        <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0b0b10]/82 shadow-[0_12px_36px_rgba(0,0,0,0.3)] backdrop-blur-xl">
+          <div className="mx-auto grid min-h-16 w-full max-w-[var(--layout-shell-max)] grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-[var(--layout-page-gutter)] py-3">
             <div className="min-w-0">
               <div className="flex items-center gap-3">
-                <h1 className="text-lg font-semibold text-white">Benchmrk</h1>
+                <h1 className="text-lg font-semibold text-white md:text-[1.15rem]">Benchmrk</h1>
                 <span className="rounded-full border border-cyan-500/25 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-200">
                   Live grid
                 </span>
               </div>
-              <p className="mt-0.5 max-w-[640px] truncate text-xs text-white/45 md:whitespace-normal">
-                Compare model quality, benchmark coverage, and deployment fit in one view.
+              <p className="mt-1 max-w-[44rem] text-xs leading-5 text-white/48 sm:text-[13px]">
+                Compare model quality, benchmark coverage, and deployment fit in one coherent view.
               </p>
             </div>
 
@@ -36,14 +36,14 @@ export default function Home() {
           </div>
         </header>
 
-        <div className="mx-auto flex min-h-0 w-full max-w-[1600px] flex-1 flex-col px-3 pb-4 pt-4 md:px-6 md:pb-5">
+        <div className="mx-auto flex min-h-0 w-full max-w-[var(--layout-shell-max)] flex-1 flex-col gap-[var(--layout-section-gap)] px-[var(--layout-page-gutter)] pb-6 pt-5 md:pb-8 md:pt-6">
           <FilterBar />
           <FilterPanel />
 
-          <main className="flex min-h-0 flex-1 pt-3 md:pt-4">
+          <main className="flex min-h-[clamp(32rem,calc(100vh-14rem),64rem)] min-w-0 flex-1">
             <GlassCard
               variant="default"
-              className="flex h-full min-h-0 w-full overflow-hidden rounded-[32px] border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.03)_100%)] shadow-[0_18px_64px_rgba(0,0,0,0.42)]"
+              className="flex h-full min-h-0 w-full overflow-hidden rounded-[34px] border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.07)_0%,rgba(255,255,255,0.035)_100%)] p-[var(--layout-shell-padding)] shadow-[0_22px_72px_rgba(0,0,0,0.42)]"
             >
               <BenchmarkGrid />
             </GlassCard>

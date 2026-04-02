@@ -82,7 +82,6 @@ export function FilterBar() {
     setScoreDisplay,
   } = useBenchmarkStore()
 
-
   const filteredModels = useMemo(
     () => selectFilteredModels(models, filters, scores),
     [models, filters, scores]
@@ -198,19 +197,19 @@ export function FilterBar() {
   }
 
   return (
-    <div className="sticky top-14 z-40 pt-3">
-      <div className="rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.04)_100%)] shadow-[0_14px_44px_rgba(0,0,0,0.34)] backdrop-blur-xl">
-        <div className="flex flex-col gap-3 px-3 py-3 md:px-4 lg:grid lg:min-h-14 lg:grid-cols-[minmax(240px,280px)_minmax(0,1fr)_auto] lg:items-center lg:gap-4 lg:py-0">
+    <div className="sticky top-[var(--layout-nav-height)] z-40 pt-1 md:pt-2">
+      <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.065)_0%,rgba(255,255,255,0.04)_100%)] shadow-[0_16px_48px_rgba(0,0,0,0.34)] backdrop-blur-xl">
+        <div className="flex flex-col gap-4 px-4 py-4 md:px-5 md:py-5 lg:grid lg:min-h-[var(--layout-filter-height)] lg:grid-cols-[minmax(260px,300px)_minmax(0,1fr)_auto] lg:items-center lg:gap-5 lg:px-5 lg:py-2 xl:px-6">
           <div className="relative min-w-0 lg:pr-1">
             <input
               type="text"
               placeholder="Search models or providers"
               value={filters.modelSearch}
               onChange={(event) => setFilter('modelSearch', event.target.value)}
-              className="h-10 w-full rounded-[14px] border border-white/10 bg-white/[0.05] pl-10 pr-3 text-sm text-white placeholder:text-white/35 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] focus:border-cyan-500/45 focus:bg-white/[0.08] lg:h-9"
+              className="h-11 w-full rounded-[16px] border border-white/10 bg-white/[0.05] pl-11 pr-4 text-sm text-white placeholder:text-white/35 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] focus:border-cyan-500/45 focus:bg-white/[0.08] lg:h-10"
             />
             <svg
-              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35"
+              className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-white/35"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -224,9 +223,9 @@ export function FilterBar() {
             </svg>
           </div>
 
-          <div className="min-w-0 lg:px-2">
-            <div className="flex min-h-10 items-center justify-center overflow-hidden rounded-[18px] border border-white/8 bg-white/[0.03] px-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] lg:min-h-[38px]">
-              <div className="flex max-w-full items-center justify-center gap-1.5 overflow-x-auto px-1 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="min-w-0 lg:px-1 xl:px-2">
+            <div className="flex min-h-11 items-center overflow-hidden rounded-[20px] border border-white/8 bg-white/[0.03] px-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] lg:min-h-10">
+              <div className="flex max-w-full flex-1 items-center justify-start gap-1.5 overflow-x-auto py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:justify-center">
                 <AnimatePresence initial={false} mode="popLayout">
                   {activeChips.map((chip) => (
                     <FilterChip
@@ -246,33 +245,53 @@ export function FilterBar() {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-end gap-2 lg:justify-self-end">
-            <button
-              type="button"
-              onClick={() => toggleFilterPanel()}
-              className={cn(
-                'inline-flex h-10 items-center rounded-[14px] border px-4 text-sm font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] active:scale-[0.98] lg:h-9',
-                isFilterPanelOpen
-                  ? 'border-violet-500/50 bg-violet-500/20 text-violet-200'
-                  : 'border-white/10 bg-white/[0.04] text-white/75 hover:border-white/20 hover:bg-white/[0.06] hover:text-white'
-              )}
-            >
-              Filters
-              {activeFilterCount > 0 && (
-                <span className="ml-2 inline-flex min-w-5 items-center justify-center rounded-full bg-violet-500 px-1.5 text-[11px] font-semibold text-white shadow-[0_6px_14px_rgba(124,58,237,0.35)]">
-                  {activeFilterCount}
-                </span>
-              )}
-            </button>
+          <div className="flex min-w-0 flex-col gap-2.5 lg:flex-row lg:items-center lg:justify-end lg:gap-2.5">
+            <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+              <button
+                type="button"
+                onClick={() => toggleFilterPanel()}
+                className={cn(
+                  'inline-flex h-10 items-center justify-center rounded-[14px] border px-4 text-sm font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] active:scale-[0.98]',
+                  isFilterPanelOpen
+                    ? 'border-violet-500/50 bg-violet-500/20 text-violet-200'
+                    : 'border-white/10 bg-white/[0.04] text-white/75 hover:border-white/20 hover:bg-white/[0.06] hover:text-white'
+                )}
+              >
+                Filters
+                {activeFilterCount > 0 && (
+                  <span className="ml-2 inline-flex min-w-5 items-center justify-center rounded-full bg-violet-500 px-1.5 text-[11px] font-semibold text-white shadow-[0_6px_14px_rgba(124,58,237,0.35)]">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </button>
 
-            <div className="flex h-10 items-center rounded-[14px] border border-white/10 bg-white/[0.04] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] lg:h-9">
+              {activeChips.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleClearAll}
+                  className="inline-flex h-10 items-center justify-center rounded-[14px] px-3.5 text-sm text-white/55 active:scale-[0.98] hover:text-white"
+                >
+                  Clear all
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={handleExport}
+                className="inline-flex h-10 items-center justify-center rounded-[14px] border border-white/10 bg-white/[0.04] px-4 text-sm text-white/75 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] active:scale-[0.98] hover:border-white/20 hover:bg-white/[0.06] hover:text-white"
+              >
+                Export CSV
+              </button>
+            </div>
+
+            <div className="grid w-full grid-cols-2 gap-1.5 rounded-[18px] border border-white/10 bg-white/[0.04] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:grid-cols-4 lg:w-auto lg:min-w-[19rem]">
               {DISPLAY_MODES.map((mode) => (
                 <button
                   key={mode}
                   type="button"
                   onClick={() => setScoreDisplay(mode)}
                   className={cn(
-                    'rounded-[10px] px-3 py-1 text-[11px] font-semibold tracking-[0.14em] uppercase active:scale-[0.98]',
+                    'rounded-[12px] px-3 py-2 text-[11px] font-semibold tracking-[0.14em] uppercase active:scale-[0.98]',
                     scoreDisplay === mode
                       ? 'bg-cyan-500/18 text-cyan-200 shadow-[0_8px_18px_rgba(6,182,212,0.18)]'
                       : 'text-white/45 hover:text-white/80'
@@ -282,24 +301,6 @@ export function FilterBar() {
                 </button>
               ))}
             </div>
-
-            {activeChips.length > 0 && (
-              <button
-                type="button"
-                onClick={handleClearAll}
-                className="inline-flex h-10 items-center rounded-[14px] px-3 text-sm text-white/55 active:scale-[0.98] hover:text-white lg:h-9"
-              >
-                Clear all
-              </button>
-            )}
-
-            <button
-              type="button"
-              onClick={handleExport}
-              className="inline-flex h-10 items-center rounded-[14px] border border-white/10 bg-white/[0.04] px-4 text-sm text-white/75 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] active:scale-[0.98] hover:border-white/20 hover:bg-white/[0.06] hover:text-white lg:h-9"
-            >
-              Export CSV
-            </button>
           </div>
         </div>
       </div>

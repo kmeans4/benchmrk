@@ -54,18 +54,18 @@ export const GridRow = memo(function GridRow({
         isSelected &&
           'border-b-cyan-500/20 bg-[linear-gradient(90deg,rgba(6,182,212,0.12)_0%,rgba(6,182,212,0.03)_42%,transparent_100%)] shadow-[0_12px_28px_rgba(6,182,212,0.14)]'
       )}
-      style={{ minHeight: 84 }}
+      style={{ minHeight: 92 }}
       onClick={onClick}
     >
       <div
         className={cn(
-          'sticky left-0 z-20 border-r border-white/10 px-4 py-3.5 shadow-[10px_0_24px_rgba(5,7,12,0.22)] backdrop-blur-xl transition-colors',
-          isSelected ? 'bg-[#101521]/96' : 'bg-[#0b0b10]/92 group-hover:bg-[#10131b]/95'
+          'sticky left-0 z-20 border-r border-white/10 px-5 py-4 shadow-[12px_0_28px_rgba(5,7,12,0.28)] backdrop-blur-xl transition-colors',
+          isSelected ? 'bg-[#101521]/96' : 'bg-[#0b0c12]/92 group-hover:bg-[#10131b]/95'
         )}
         style={{ width: modelColumnWidth, minWidth: modelColumnWidth }}
       >
-        <div className="flex h-full flex-col justify-center gap-2.5">
-          <div className="space-y-1">
+        <div className="flex h-full flex-col justify-center gap-3">
+          <div className="space-y-1.5">
             <p className="truncate text-[15px] font-semibold leading-5 text-white">{model.name}</p>
             <p className="truncate text-xs text-white/45">{model.provider}</p>
           </div>
@@ -82,7 +82,7 @@ export const GridRow = memo(function GridRow({
             </span>
           </div>
         </div>
-        <span className="pointer-events-none absolute inset-y-0 right-0 w-5 bg-gradient-to-r from-white/[0.06] via-white/[0.03] to-transparent opacity-70" />
+        <span className="pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-r from-white/[0.08] via-white/[0.04] to-transparent opacity-75" />
       </div>
 
       <div className="flex">
@@ -93,7 +93,7 @@ export const GridRow = memo(function GridRow({
           return (
             <div
               key={benchmark.id}
-              className="group/cell flex shrink-0 items-center justify-center border-r border-white/5 px-2.5 py-3 transition-colors duration-200 hover:border-r-white/10 hover:bg-white/[0.02]"
+              className="group/cell flex shrink-0 items-center justify-center border-r border-white/5 px-3 py-4 transition-colors duration-200 hover:border-r-white/10 hover:bg-white/[0.02]"
               style={{ width: benchmarkColumnWidth, minWidth: benchmarkColumnWidth, maxWidth: benchmarkColumnWidth }}
             >
               {scoreValue !== undefined && range ? (

@@ -14,7 +14,7 @@ import { GridRow } from './GridRow'
 
 const MODEL_COLUMN_WIDTH = 220
 const BENCHMARK_COLUMN_WIDTH = 120
-const ROW_HEIGHT = 84
+const ROW_HEIGHT = 92
 
 export function BenchmarkGrid() {
   const parentRef = useRef<HTMLDivElement>(null)
@@ -102,7 +102,7 @@ export function BenchmarkGrid() {
 
   if (sortedGrid.length === 0) {
     return (
-      <div className="flex flex-1 items-center justify-center px-6 py-16">
+      <div className="flex flex-1 items-center justify-center rounded-[28px] border border-white/8 bg-[#090a10]/55 px-6 py-16">
         <div className="max-w-md rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.03)_100%)] p-8 text-center shadow-[0_18px_56px_rgba(0,0,0,0.4)] backdrop-blur-xl">
           <p className="text-lg font-semibold text-white">No models match the current filters</p>
           <p className="mt-2 text-sm text-white/50">
@@ -121,9 +121,12 @@ export function BenchmarkGrid() {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-      <div ref={parentRef} className="min-h-0 flex-1 overflow-auto overscroll-contain [scrollbar-gutter:stable_both-edges]">
-        <div className="relative min-w-full pb-2" style={{ width: contentWidth }}>
+    <div className="flex min-h-0 flex-1 flex-col rounded-[28px] border border-white/8 bg-[#090a10]/50 p-2.5 md:p-3.5">
+      <div
+        ref={parentRef}
+        className="min-h-0 flex-1 overflow-auto rounded-[24px] border border-white/7 bg-[#0a0b11]/60 p-2 overscroll-contain shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] [scrollbar-gutter:stable_both-edges] md:p-3"
+      >
+        <div className="relative min-w-full pb-3" style={{ width: contentWidth }}>
           <GridHeader
             benchmarks={visibleBenchmarks}
             onSort={setSortModel}

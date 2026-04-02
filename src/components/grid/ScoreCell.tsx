@@ -31,7 +31,7 @@ export const ScoreCell = memo(function ScoreCell({
 
   const color = getScoreColor(normalized)
   const sharedClasses = cn(
-    'relative flex h-12 w-full items-center justify-center overflow-hidden rounded-[16px] border px-2.5 font-mono text-[13px] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition-[border-color,background-color,box-shadow,transform] duration-200',
+    'relative flex h-[52px] w-full items-center justify-center overflow-hidden rounded-[18px] border px-3 font-mono text-[13px] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm transition-[border-color,background-color,box-shadow,transform] duration-200',
     className
   )
 
@@ -45,7 +45,7 @@ export const ScoreCell = memo(function ScoreCell({
         style={{ borderColor: `${color}2c` }}
       >
         <span
-          className="pointer-events-none absolute inset-x-3 bottom-1 h-px rounded-full"
+          className="pointer-events-none absolute inset-x-3 bottom-1.5 h-px rounded-full"
           style={{ background: `linear-gradient(90deg, transparent, ${color}88, transparent)` }}
         />
         <motion.span
@@ -90,10 +90,10 @@ export const ScoreCell = memo(function ScoreCell({
         )}
         style={{ borderColor: `${color}26` }}
       >
-        <div className="absolute inset-0 overflow-hidden rounded-[16px]">
-          <div className="absolute inset-[1px] rounded-[15px] bg-white/[0.025]" />
+        <div className="absolute inset-0 overflow-hidden rounded-[18px]">
+          <div className="absolute inset-[1px] rounded-[17px] bg-white/[0.025]" />
           <motion.div
-            className="absolute inset-y-0 left-0 rounded-[16px]"
+            className="absolute inset-y-0 left-0 rounded-[18px]"
             initial={{ width: 0 }}
             animate={{ width: `${Math.max(normalized, 0.06) * 100}%` }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
@@ -112,7 +112,7 @@ export const ScoreCell = memo(function ScoreCell({
       <div
         className={cn(
           sharedClasses,
-          'justify-between gap-2 bg-[linear-gradient(180deg,rgba(255,255,255,0.045)_0%,rgba(255,255,255,0.03)_100%)] px-2.5'
+          'justify-between gap-2 bg-[linear-gradient(180deg,rgba(255,255,255,0.045)_0%,rgba(255,255,255,0.03)_100%)]'
         )}
         style={{ borderColor: `${color}28` }}
       >
@@ -144,7 +144,7 @@ export function EmptyScoreCell({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'flex h-12 w-full items-center justify-center rounded-[16px] border border-dashed border-white/6 bg-white/[0.02] px-2 font-mono text-sm text-white/20',
+        'flex h-[52px] w-full items-center justify-center rounded-[18px] border border-dashed border-white/6 bg-white/[0.02] px-2 font-mono text-sm text-white/20',
         className
       )}
     >

@@ -8,6 +8,12 @@
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.12);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --layout-shell-max: 1600px;
+  --layout-nav-height: 4rem;
+  --layout-filter-height: 3.5rem;
+  --layout-page-gutter: clamp(1rem, 2vw, 2rem);
+  --layout-section-gap: clamp(1rem, 1.8vw, 1.5rem);
+  --layout-shell-padding: clamp(0.75rem, 1.2vw, 1.25rem);
 }
 
 @theme inline {
@@ -34,6 +40,10 @@ body {
   background: linear-gradient(180deg, #0a0a0f 0%, #0f0f1a 100%);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+main {
+  scroll-padding-top: calc(var(--layout-nav-height) + var(--layout-filter-height) + 1.5rem);
 }
 
 button,
