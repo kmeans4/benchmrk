@@ -1,6 +1,14 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
-import { Model, Benchmark, ScoreMap, FilterState, SortState, ViewMode, ScoreDisplayMode, PaginationState, HostingType, Modality, LicenseType } from '@/types/benchmark'
+import { Model, Benchmark, ScoreMap, FilterState, SortState, ViewMode, ScoreDisplayMode, PaginationState } from '@/types/benchmark'
+
+type ArrayFilterKey = {
+  [K in keyof FilterState]: FilterState[K] extends readonly unknown[] ? K : never
+}[keyof FilterState]
+
+type ArrayFilterValue<K extends ArrayFilterKey> = FilterState[K] extends readonly (infer U)[]
+  ? U
+  : never
 
 interface BenchmarkStore {
   // Data
@@ -28,7 +36,7 @@ interface BenchmarkStore {
   // Actions - Filters
   setFilter: <K extends keyof FilterState>(key: K, value: FilterState[K]) => void
   clearFilters: () => void
-  removeFilterValue: <K extends keyof FilterState>(key: K, value: any) => void
+  removeFilterValue: <K extends ArrayFilterKey>(key: K, value: ArrayFilterValue<K>) => void
 
   // Actions - Sort
   setSortModel: (by: string, dir?: 'asc' | 'desc') => void
@@ -91,7 +99,7 @@ const initialState: Omit<BenchmarkStore, 'setData' | 'setFilter' | 'clearFilters
 }
 
 export const useBenchmarkStore = create<BenchmarkStore>()(
-  immer((set, get) => ({
+  immer((set) => ({
     ...initialState,
 
     // Data actions
@@ -118,10 +126,8 @@ export const useBenchmarkStore = create<BenchmarkStore>()(
 
     removeFilterValue: (key, valueToRemove) => {
       set((state) => {
-        const current = state.filters[key] as any[]
-        if (Array.isArray(current)) {
-          state.filters[key] = current.filter((v) => v !== valueToRemove) as any
-        }
+        const current = state.filters[key]
+        state.filters[key] = current.filter((value) => value !== valueToRemove) as FilterState[typeof key]
       })
     },
 
@@ -306,13 +312,15 @@ export const selectVisibleBenchmarks = (
 
 export const selectScoreRange = (
   scores: ScoreMap,
-  visibleBenchmarks: Benchmark[]
+  visibleBenchmarks: Benchmark[],
+  models?: Model[]
 ): { [benchmarkId: string]: { min: number; max: number } } => {
   const range: { [benchmarkId: string]: { min: number; max: number } } = {}
+  const modelIds = models?.map((model) => model.id) ?? Object.keys(scores)
 
   visibleBenchmarks.forEach((benchmark) => {
-    const values = Object.values(scores)
-      .map((modelScores) => modelScores[benchmark.id])
+    const values = modelIds
+      .map((modelId) => scores[modelId]?.[benchmark.id])
       .filter((v): v is number => v !== undefined)
 
     if (values.length > 0) {

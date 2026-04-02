@@ -30,9 +30,9 @@ function formatLicenseType(type: LicenseType) {
 
 function SectionTitle({ title, description }: { title: string; description: string }) {
   return (
-    <div className="mb-4 space-y-1">
+    <div className="mb-4 space-y-1.5">
       <h3 className="text-sm font-semibold text-white">{title}</h3>
-      <p className="text-xs text-white/45">{description}</p>
+      <p className="text-xs leading-5 text-white/45">{description}</p>
     </div>
   )
 }
@@ -61,7 +61,10 @@ export function FilterPanel() {
   )
 
   const skillAreas = useMemo(
-    () => Array.from(new Set(benchmarks.map((benchmark) => benchmark.skillAreaName))).sort((a, b) => a.localeCompare(b)),
+    () =>
+      Array.from(new Set(benchmarks.map((benchmark) => benchmark.skillAreaName))).sort((a, b) =>
+        a.localeCompare(b)
+      ),
     [benchmarks]
   )
 
@@ -91,6 +94,11 @@ export function FilterPanel() {
     setFilter('paramRange', [filters.paramRange[0], Math.max(nextMax, filters.paramRange[0])])
   }
 
+  const handleClearAll = () => {
+    clearFilters()
+    setBenchmarkSearch('')
+  }
+
   return (
     <AnimatePresence initial={false}>
       {isFilterPanelOpen && (
@@ -99,17 +107,17 @@ export function FilterPanel() {
           animate={{ height: 'auto', opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-          className="relative z-30 mt-3 overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.05] shadow-[0_12px_48px_rgba(0,0,0,0.45)] backdrop-blur-xl"
+          className="relative z-30 mt-3 overflow-hidden rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.04)_100%)] shadow-[0_18px_60px_rgba(0,0,0,0.4)] backdrop-blur-xl"
         >
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="max-h-[65vh] overflow-y-auto px-4 py-4 md:px-6 md:py-6"
+            className="max-h-[68vh] overflow-y-auto px-3 py-3 md:px-5 md:py-5"
           >
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-4">
-              <GlassCard className="rounded-2xl border-white/10 bg-white/[0.04] p-4" hover>
+            <div className="grid grid-cols-1 gap-4 md:gap-5 lg:grid-cols-2 xl:grid-cols-4 xl:gap-6">
+              <GlassCard className="rounded-[24px] border-white/10 bg-white/[0.04] p-4 md:p-5" hover>
                 <SectionTitle
                   title="Benchmarks"
                   description="Filter visible benchmark columns by benchmark, category, or skill area."
@@ -120,10 +128,10 @@ export function FilterPanel() {
                   value={benchmarkSearch}
                   onChange={(event) => setBenchmarkSearch(event.target.value)}
                   placeholder="Search benchmarks"
-                  className="mb-3 h-9 w-full rounded-xl border border-white/10 bg-white/[0.04] px-3 text-sm text-white placeholder:text-white/35 focus:border-cyan-500/50"
+                  className="mb-3 h-10 w-full rounded-[14px] border border-white/10 bg-white/[0.04] px-3 text-sm text-white placeholder:text-white/35 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] focus:border-cyan-500/45"
                 />
 
-                <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                <div className="max-h-56 space-y-2 overflow-y-auto pr-1">
                   {filteredBenchmarks.map((benchmark) => {
                     const isActive = filters.benchmarkIds.includes(benchmark.id)
 
@@ -140,10 +148,10 @@ export function FilterPanel() {
                           )
                         }
                         className={cn(
-                          'flex w-full items-center justify-between rounded-xl border px-3 py-2 text-left transition-colors',
+                          'flex w-full items-center justify-between rounded-[16px] border px-3 py-2.5 text-left active:scale-[0.99]',
                           isActive
-                            ? 'border-cyan-500/40 bg-cyan-500/12 text-cyan-100'
-                            : 'border-white/10 bg-white/[0.03] text-white/75 hover:border-white/20 hover:text-white'
+                            ? 'border-cyan-500/40 bg-cyan-500/12 text-cyan-100 shadow-[0_10px_22px_rgba(6,182,212,0.08)]'
+                            : 'border-white/10 bg-white/[0.03] text-white/75 hover:border-white/20 hover:bg-white/[0.05] hover:text-white'
                         )}
                       >
                         <span className="min-w-0 pr-3 text-sm">
@@ -159,7 +167,7 @@ export function FilterPanel() {
                 </div>
               </GlassCard>
 
-              <GlassCard className="rounded-2xl border-white/10 bg-white/[0.04] p-4" hover>
+              <GlassCard className="rounded-[24px] border-white/10 bg-white/[0.04] p-4 md:p-5" hover>
                 <SectionTitle
                   title="Categories & domains"
                   description="Keep filters grouped by benchmark taxonomy so the grid remains predictable."
@@ -187,10 +195,10 @@ export function FilterPanel() {
                               )
                             }
                             className={cn(
-                              'rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
+                              'rounded-full border px-3 py-1.5 text-xs font-medium active:scale-[0.98]',
                               isActive
-                                ? 'border-violet-500/40 bg-violet-500/15 text-violet-100'
-                                : 'border-white/10 bg-white/[0.03] text-white/65 hover:border-white/20 hover:text-white'
+                                ? 'border-violet-500/40 bg-violet-500/15 text-violet-100 shadow-[0_8px_18px_rgba(124,58,237,0.14)]'
+                                : 'border-white/10 bg-white/[0.03] text-white/65 hover:border-white/20 hover:bg-white/[0.05] hover:text-white'
                             )}
                           >
                             {category}
@@ -221,10 +229,10 @@ export function FilterPanel() {
                               )
                             }
                             className={cn(
-                              'rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
+                              'rounded-full border px-3 py-1.5 text-xs font-medium active:scale-[0.98]',
                               isActive
-                                ? 'border-cyan-500/40 bg-cyan-500/15 text-cyan-100'
-                                : 'border-white/10 bg-white/[0.03] text-white/65 hover:border-white/20 hover:text-white'
+                                ? 'border-cyan-500/40 bg-cyan-500/15 text-cyan-100 shadow-[0_8px_18px_rgba(6,182,212,0.14)]'
+                                : 'border-white/10 bg-white/[0.03] text-white/65 hover:border-white/20 hover:bg-white/[0.05] hover:text-white'
                             )}
                           >
                             {skillArea}
@@ -236,7 +244,7 @@ export function FilterPanel() {
                 </div>
               </GlassCard>
 
-              <GlassCard className="rounded-2xl border-white/10 bg-white/[0.04] p-4" hover>
+              <GlassCard className="rounded-[24px] border-white/10 bg-white/[0.04] p-4 md:p-5" hover>
                 <SectionTitle
                   title="Providers & hosting"
                   description="Compare cloud, local, and hybrid models without losing provider context."
@@ -260,10 +268,10 @@ export function FilterPanel() {
                             )
                           }
                           className={cn(
-                            'rounded-xl border px-3 py-2 text-left text-sm transition-colors',
+                            'rounded-[16px] border px-3 py-2.5 text-left text-sm active:scale-[0.99]',
                             isActive
-                              ? 'border-emerald-500/40 bg-emerald-500/12 text-emerald-100'
-                              : 'border-white/10 bg-white/[0.03] text-white/75 hover:border-white/20 hover:text-white'
+                              ? 'border-emerald-500/40 bg-emerald-500/12 text-emerald-100 shadow-[0_10px_22px_rgba(16,185,129,0.08)]'
+                              : 'border-white/10 bg-white/[0.03] text-white/75 hover:border-white/20 hover:bg-white/[0.05] hover:text-white'
                           )}
                         >
                           {provider}
@@ -293,10 +301,10 @@ export function FilterPanel() {
                               )
                             }
                             className={cn(
-                              'rounded-xl border px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] transition-colors',
+                              'rounded-[14px] border px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] active:scale-[0.98]',
                               isActive
-                                ? 'border-cyan-500/40 bg-cyan-500/12 text-cyan-100'
-                                : 'border-white/10 bg-white/[0.03] text-white/60 hover:border-white/20 hover:text-white'
+                                ? 'border-cyan-500/40 bg-cyan-500/12 text-cyan-100 shadow-[0_8px_18px_rgba(6,182,212,0.14)]'
+                                : 'border-white/10 bg-white/[0.03] text-white/60 hover:border-white/20 hover:bg-white/[0.05] hover:text-white'
                             )}
                           >
                             {formatHostingType(hostingType)}
@@ -308,7 +316,7 @@ export function FilterPanel() {
                 </div>
               </GlassCard>
 
-              <GlassCard className="rounded-2xl border-white/10 bg-white/[0.04] p-4" hover>
+              <GlassCard className="rounded-[24px] border-white/10 bg-white/[0.04] p-4 md:p-5" hover>
                 <SectionTitle
                   title="Capabilities"
                   description="Use parameter, modality, and license filters to narrow the model set."
@@ -336,10 +344,10 @@ export function FilterPanel() {
                               )
                             }
                             className={cn(
-                              'rounded-xl border px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] transition-colors',
+                              'rounded-[14px] border px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] active:scale-[0.98]',
                               isActive
-                                ? 'border-violet-500/40 bg-violet-500/15 text-violet-100'
-                                : 'border-white/10 bg-white/[0.03] text-white/60 hover:border-white/20 hover:text-white'
+                                ? 'border-violet-500/40 bg-violet-500/15 text-violet-100 shadow-[0_8px_18px_rgba(124,58,237,0.14)]'
+                                : 'border-white/10 bg-white/[0.03] text-white/60 hover:border-white/20 hover:bg-white/[0.05] hover:text-white'
                             )}
                           >
                             {modality}
@@ -370,10 +378,10 @@ export function FilterPanel() {
                               )
                             }
                             className={cn(
-                              'rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
+                              'rounded-full border px-3 py-1.5 text-xs font-medium active:scale-[0.98]',
                               isActive
-                                ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-100'
-                                : 'border-white/10 bg-white/[0.03] text-white/65 hover:border-white/20 hover:text-white'
+                                ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-100 shadow-[0_8px_18px_rgba(16,185,129,0.14)]'
+                                : 'border-white/10 bg-white/[0.03] text-white/65 hover:border-white/20 hover:bg-white/[0.05] hover:text-white'
                             )}
                           >
                             {formatLicenseType(licenseType)}
@@ -387,7 +395,7 @@ export function FilterPanel() {
                     <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/35">
                       Parameter count
                     </p>
-                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+                    <div className="rounded-[20px] border border-white/10 bg-white/[0.03] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
                       <div className="mb-3 flex items-center justify-between text-sm text-white/75">
                         <span>{filters.paramRange[0]}B min</span>
                         <span>{filters.paramRange[1]}B max</span>
@@ -417,7 +425,7 @@ export function FilterPanel() {
             </div>
           </motion.div>
 
-          <div className="sticky bottom-0 flex items-center justify-between border-t border-white/10 bg-[#0b0b10]/90 px-4 py-4 backdrop-blur-xl md:px-6">
+          <div className="sticky bottom-0 flex items-center justify-between border-t border-white/10 bg-[#0b0b10]/90 px-4 py-4 shadow-[0_-12px_28px_rgba(5,7,12,0.26)] backdrop-blur-xl md:px-6">
             <p className="text-sm text-white/45">
               {activeFilterCount === 0
                 ? 'No filters applied'
@@ -426,15 +434,15 @@ export function FilterPanel() {
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                onClick={clearFilters}
-                className="inline-flex h-10 items-center rounded-xl px-4 text-sm text-white/60 transition-colors hover:text-white"
+                onClick={handleClearAll}
+                className="inline-flex h-10 items-center rounded-[14px] px-4 text-sm text-white/60 active:scale-[0.98] hover:text-white"
               >
                 Clear all
               </button>
               <button
                 type="button"
                 onClick={() => toggleFilterPanel(false)}
-                className="inline-flex h-10 items-center rounded-xl border border-cyan-500/40 bg-cyan-500/18 px-5 text-sm font-medium text-cyan-100 transition-all hover:border-cyan-400/60 hover:bg-cyan-500/25"
+                className="inline-flex h-10 items-center rounded-[14px] border border-cyan-500/40 bg-cyan-500/18 px-5 text-sm font-medium text-cyan-100 shadow-[0_10px_24px_rgba(6,182,212,0.16)] active:scale-[0.98] hover:border-cyan-400/60 hover:bg-cyan-500/25"
               >
                 Apply{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}
               </button>

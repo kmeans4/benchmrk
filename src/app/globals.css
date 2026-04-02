@@ -2,6 +2,7 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: dark;
   --background: #0a0a0f;
   --foreground: #ededed;
   --glass-bg: rgba(255, 255, 255, 0.05);
@@ -33,6 +34,17 @@ body {
   background: linear-gradient(180deg, #0a0a0f 0%, #0f0f1a 100%);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+button,
+input,
+select {
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    color 200ms ease,
+    transform 200ms ease;
 }
 
 button {

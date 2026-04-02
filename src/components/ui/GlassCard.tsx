@@ -17,23 +17,27 @@ export function GlassCard({
   className,
   ...props
 }: GlassCardProps) {
-  const baseStyles = 'backdrop-blur-xl border transition-all duration-200'
+  const baseStyles =
+    'border backdrop-blur-xl transition-[border-color,box-shadow,background-color,transform] duration-200'
 
   const variants = {
-    default: 'bg-white/5 border-white/12 shadow-lg',
-    elevated: 'bg-white/10 border-white/12 shadow-xl',
-    modal: 'bg-white/10 border-white/20 shadow-2xl',
+    default:
+      'bg-white/[0.05] border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.08)]',
+    elevated:
+      'bg-white/[0.09] border-white/12 shadow-[0_12px_42px_rgba(0,0,0,0.48),inset_0_1px_0_rgba(255,255,255,0.08)]',
+    modal:
+      'bg-white/[0.1] border-white/20 shadow-[0_18px_56px_rgba(0,0,0,0.52),inset_0_1px_0_rgba(255,255,255,0.1)]',
   }
 
   const hoverStyles = hover
-    ? 'hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:border-cyan-500/30'
+    ? 'hover:border-cyan-400/30 hover:shadow-[0_14px_40px_rgba(0,0,0,0.42),0_0_26px_rgba(6,182,212,0.14),inset_0_1px_0_rgba(255,255,255,0.08)]'
     : ''
 
   return (
     <motion.div
       className={cn(baseStyles, variants[variant], hoverStyles, className)}
-      whileHover={hover ? { scale: 1.02 } : undefined}
-      transition={{ duration: 0.2 }}
+      whileHover={hover ? { y: -1.5, scale: 1.005 } : undefined}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
       {...props}
     >
       {children}
@@ -56,7 +60,6 @@ export function GlassModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -66,14 +69,13 @@ export function GlassModal({
         onClick={onClose}
       />
 
-      {/* Modal */}
       <motion.div
         initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.96 }}
         transition={{ duration: 0.25 }}
         className={cn(
-          'relative z-10 backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl rounded-xl max-w-4xl w-full mx-4',
+          'relative z-10 mx-4 w-full max-w-4xl rounded-xl border border-white/20 bg-white/10 shadow-2xl backdrop-blur-xl',
           className
         )}
       >

@@ -48,24 +48,25 @@ export const GridRow = memo(function GridRow({
   return (
     <div
       className={cn(
-        'group flex min-w-fit border-b border-white/5 transition-all duration-200',
-        'hover:bg-white/[0.035] hover:shadow-[0_0_28px_rgba(6,182,212,0.08)]',
+        'group relative flex min-w-fit border-b border-white/5 transition-[background-color,box-shadow,border-color] duration-200',
+        'hover:border-b-white/10 hover:bg-[linear-gradient(90deg,rgba(255,255,255,0.045)_0%,rgba(255,255,255,0.02)_100%)] hover:shadow-[0_12px_28px_rgba(6,182,212,0.08)]',
         onClick && 'cursor-pointer',
-        isSelected && 'bg-cyan-500/[0.08] shadow-[0_0_28px_rgba(6,182,212,0.12)]'
+        isSelected &&
+          'border-b-cyan-500/20 bg-[linear-gradient(90deg,rgba(6,182,212,0.12)_0%,rgba(6,182,212,0.03)_42%,transparent_100%)] shadow-[0_12px_28px_rgba(6,182,212,0.14)]'
       )}
-      style={{ minHeight: 76 }}
+      style={{ minHeight: 84 }}
       onClick={onClick}
     >
       <div
         className={cn(
-          'sticky left-0 z-20 border-r border-white/10 px-4 py-3 backdrop-blur-xl transition-colors',
-          isSelected ? 'bg-[#101420]/95' : 'bg-[#0b0b10]/92 group-hover:bg-[#10131c]/95'
+          'sticky left-0 z-20 border-r border-white/10 px-4 py-3.5 shadow-[10px_0_24px_rgba(5,7,12,0.22)] backdrop-blur-xl transition-colors',
+          isSelected ? 'bg-[#101521]/96' : 'bg-[#0b0b10]/92 group-hover:bg-[#10131b]/95'
         )}
         style={{ width: modelColumnWidth, minWidth: modelColumnWidth }}
       >
-        <div className="flex h-full flex-col justify-center gap-2">
+        <div className="flex h-full flex-col justify-center gap-2.5">
           <div className="space-y-1">
-            <p className="truncate text-sm font-semibold text-white">{model.name}</p>
+            <p className="truncate text-[15px] font-semibold leading-5 text-white">{model.name}</p>
             <p className="truncate text-xs text-white/45">{model.provider}</p>
           </div>
 
@@ -73,14 +74,15 @@ export const GridRow = memo(function GridRow({
             <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-cyan-200">
               {formatHostingType(model.hostingType)}
             </span>
-            <span className="rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-white/55">
+            <span className="rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-white/60">
               {formatLicenseType(model.licenseType)}
             </span>
-            <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/30">
-              {formatParams(model.parameterCount)}
+            <span className="rounded-full border border-white/8 bg-white/[0.03] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.18em] text-white/38">
+              {formatParams(model.parameterCount)} params
             </span>
           </div>
         </div>
+        <span className="pointer-events-none absolute inset-y-0 right-0 w-5 bg-gradient-to-r from-white/[0.06] via-white/[0.03] to-transparent opacity-70" />
       </div>
 
       <div className="flex">
@@ -91,7 +93,7 @@ export const GridRow = memo(function GridRow({
           return (
             <div
               key={benchmark.id}
-              className="flex shrink-0 items-center justify-center border-r border-white/5 px-2 py-2"
+              className="group/cell flex shrink-0 items-center justify-center border-r border-white/5 px-2.5 py-3 transition-colors duration-200 hover:border-r-white/10 hover:bg-white/[0.02]"
               style={{ width: benchmarkColumnWidth, minWidth: benchmarkColumnWidth, maxWidth: benchmarkColumnWidth }}
             >
               {scoreValue !== undefined && range ? (

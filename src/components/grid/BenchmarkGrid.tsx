@@ -14,7 +14,7 @@ import { GridRow } from './GridRow'
 
 const MODEL_COLUMN_WIDTH = 220
 const BENCHMARK_COLUMN_WIDTH = 120
-const ROW_HEIGHT = 76
+const ROW_HEIGHT = 84
 
 export function BenchmarkGrid() {
   const parentRef = useRef<HTMLDivElement>(null)
@@ -43,8 +43,8 @@ export function BenchmarkGrid() {
   )
 
   const scoreRanges = useMemo(
-    () => selectScoreRange(scores, visibleBenchmarks),
-    [scores, visibleBenchmarks]
+    () => selectScoreRange(scores, visibleBenchmarks, filteredModels),
+    [scores, visibleBenchmarks, filteredModels]
   )
 
   const sortedGrid = useMemo(() => {
@@ -103,7 +103,7 @@ export function BenchmarkGrid() {
   if (sortedGrid.length === 0) {
     return (
       <div className="flex flex-1 items-center justify-center px-6 py-16">
-        <div className="max-w-md rounded-[28px] border border-white/10 bg-white/[0.04] p-8 text-center shadow-[0_12px_48px_rgba(0,0,0,0.4)] backdrop-blur-xl">
+        <div className="max-w-md rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.03)_100%)] p-8 text-center shadow-[0_18px_56px_rgba(0,0,0,0.4)] backdrop-blur-xl">
           <p className="text-lg font-semibold text-white">No models match the current filters</p>
           <p className="mt-2 text-sm text-white/50">
             Clear the active filters to restore the full leaderboard and benchmark coverage.
@@ -111,7 +111,7 @@ export function BenchmarkGrid() {
           <button
             type="button"
             onClick={clearFilters}
-            className="mt-5 inline-flex h-10 items-center rounded-xl border border-cyan-500/40 bg-cyan-500/18 px-4 text-sm font-medium text-cyan-100 transition-all hover:border-cyan-400/60 hover:bg-cyan-500/25"
+            className="mt-5 inline-flex h-10 items-center rounded-[14px] border border-cyan-500/40 bg-cyan-500/18 px-4 text-sm font-medium text-cyan-100 shadow-[0_10px_24px_rgba(6,182,212,0.16)] active:scale-[0.98] hover:border-cyan-400/60 hover:bg-cyan-500/25"
           >
             Clear filters
           </button>
@@ -122,8 +122,8 @@ export function BenchmarkGrid() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-      <div ref={parentRef} className="min-h-0 flex-1 overflow-auto">
-        <div className="min-w-full" style={{ width: contentWidth }}>
+      <div ref={parentRef} className="min-h-0 flex-1 overflow-auto overscroll-contain [scrollbar-gutter:stable_both-edges]">
+        <div className="relative min-w-full pb-2" style={{ width: contentWidth }}>
           <GridHeader
             benchmarks={visibleBenchmarks}
             onSort={setSortModel}
