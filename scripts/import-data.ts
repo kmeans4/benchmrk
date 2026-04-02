@@ -1,8 +1,16 @@
 import { PrismaClient } from '@prisma/client'
+import { PrismaNeon } from '@prisma/adapter-neon'
+import { neonConfig } from '@neondatabase/serverless'
+import ws from 'ws'
 import * as fs from 'fs'
 import * as path from 'path'
+import 'dotenv/config'
 
-const prisma = new PrismaClient()
+// Configure Neon for WebSocket connections
+neonConfig.webSocketConstructor = ws
+
+const adapter = new PrismaNeon({ connectionString: process.env.DATABASE_URL! })
+const prisma = new PrismaClient({ adapter })
 
 interface HuggingFaceModel {
   name: string
@@ -85,7 +93,7 @@ async function importHuggingFaceModels(dataPath: string) {
           parameterCount: model.parameterCount ? BigInt(model.parameterCount) : null,
           licenseType: licenseTypeMap[model.licenseType] || 'Unknown',
           hostingType: hostingTypeMap[model.hostingType] || 'Unknown',
-          modalities: model.modalities,
+          modalities: model.modalities as any,
           architecture: model.architecture,
           trainingDataSource: model.url,
         },
@@ -297,7 +305,7 @@ async function main() {
   console.log(`✅ Sources ready\n`)
   
   // Import data from scraped files
-  const dataDir = path.join(process.cwd(), 'data')
+  const dataDir = path.join(process.cwd(), 'scripts')
   
   // Check if data directory exists
   if (!fs.existsSync(dataDir)) {
