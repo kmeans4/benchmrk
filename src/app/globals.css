@@ -9,7 +9,7 @@
   --glass-border: rgba(255, 255, 255, 0.12);
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   --layout-shell-max: 1600px;
-  --layout-nav-height: 4rem;
+  --layout-nav-height: 4.25rem;
   --layout-filter-height: 3.5rem;
   --layout-page-gutter: clamp(1rem, 3vw, 2.75rem);
   --layout-section-gap: clamp(1.125rem, 2vw, 2rem);
@@ -18,9 +18,19 @@
 
 @media (max-width: 767px) {
   :root {
-    --layout-page-gutter: clamp(0.875rem, 4vw, 1.125rem);
+    --layout-nav-height: 4rem;
+    --layout-page-gutter: 1.25rem;
     --layout-section-gap: 1rem;
     --layout-shell-padding: 0.7rem;
+  }
+
+  .logo-wrapper {
+    margin-left: -0.5rem;
+  }
+
+  .mobile-menu-content {
+    gap: 1.5rem;
+    padding-bottom: 2rem;
   }
 }
 

@@ -15,15 +15,15 @@ export default function Home() {
 
       <div className="relative flex min-h-screen flex-col">
         <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0b0b10]/82 shadow-[0_12px_36px_rgba(0,0,0,0.3)] backdrop-blur-xl">
-          <div className="mx-auto grid min-h-[4.75rem] w-full max-w-[var(--layout-shell-max)] grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-[var(--layout-page-gutter)] py-4 md:gap-5 md:py-4">
+          <div className="mx-auto grid min-h-[var(--layout-nav-height)] w-full max-w-[var(--layout-shell-max)] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-[var(--layout-page-gutter)] py-3 md:gap-4 md:py-3.5">
             <div className="min-w-0">
-              <div className="flex items-center gap-3">
+              <div className="logo-wrapper flex items-center gap-2.5">
                 <h1 className="text-lg font-semibold text-white md:text-[1.2rem]">Benchmrk</h1>
                 <span className="rounded-full border border-cyan-500/25 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-200">
                   Live grid
                 </span>
               </div>
-              <p className="mt-1.5 max-w-[46rem] text-xs leading-5 text-white/48 sm:text-[13px] md:leading-6">
+              <p className="mt-1.5 max-w-[46rem] pr-1 text-xs leading-5 text-white/48 sm:text-[13px] md:leading-6">
                 Compare model quality, benchmark coverage, and deployment fit in one coherent view.
               </p>
             </div>
