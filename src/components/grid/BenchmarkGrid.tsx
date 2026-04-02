@@ -105,16 +105,16 @@ export function BenchmarkGrid() {
 
   if (sortedGrid.length === 0) {
     return (
-      <div className="flex flex-1 items-center justify-center rounded-[28px] border border-white/8 bg-[#090a10]/55 px-6 py-16">
+      <div className="no-models-container flex flex-1 items-center justify-center rounded-[28px] border border-white/8 bg-[#090a10]/55 px-6 py-16">
         <div className="max-w-md rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.03)_100%)] p-8 text-center shadow-[0_18px_56px_rgba(0,0,0,0.4)] backdrop-blur-xl">
-          <p className="text-lg font-semibold text-white">No models match the current filters</p>
+          <h2 className="text-lg font-semibold text-white">No models match the current filters</h2>
           <p className="mt-2 text-sm text-white/50">
             Clear the active filters to restore the full leaderboard and benchmark coverage.
           </p>
           <button
             type="button"
             onClick={clearFilters}
-            className="mt-5 inline-flex h-10 items-center rounded-[14px] border border-cyan-500/40 bg-cyan-500/18 px-4 text-sm font-medium text-cyan-100 shadow-[0_10px_24px_rgba(6,182,212,0.16)] active:scale-[0.98] hover:border-cyan-400/60 hover:bg-cyan-500/25"
+            className="clear-filters-btn mt-5 inline-flex h-10 items-center rounded-[14px] border border-cyan-500/40 bg-cyan-500/18 px-4 text-sm font-medium text-cyan-100 shadow-[0_10px_24px_rgba(6,182,212,0.16)] active:scale-[0.98] hover:border-cyan-400/60 hover:bg-cyan-500/25"
           >
             Clear filters
           </button>
@@ -136,10 +136,10 @@ export function BenchmarkGrid() {
 
       <div
         ref={parentRef}
-        className="hidden overflow-auto rounded-[24px] border border-white/7 bg-[#0a0b11]/60 p-2 overscroll-contain shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] [scrollbar-gutter:stable_both-edges] md:block md:p-3"
+        className="glass-leaderboard hidden overflow-auto rounded-[24px] border border-white/7 bg-[#0a0b11]/60 p-2 overscroll-contain shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] [scrollbar-gutter:stable_both-edges] md:block md:p-3"
         style={{ height: desktopViewportHeight }}
       >
-        <div className="relative min-w-full pb-3" style={{ width: contentWidth }}>
+        <div className="leaderboard-grid relative min-w-full pb-3" style={{ width: contentWidth }}>
           <GridHeader
             benchmarks={visibleBenchmarks}
             onSort={setSortModel}

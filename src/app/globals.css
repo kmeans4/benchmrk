@@ -63,6 +63,32 @@
   }
 }
 
+.glass-leaderboard {
+  margin-top: 1rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.leaderboard-grid {
+  min-width: 600px;
+  padding: 0.5rem;
+}
+
+.no-models-container {
+  padding: 4rem 1.5rem;
+  text-align: center;
+}
+
+.no-models-container h2 {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.clear-filters-btn {
+  display: inline-flex;
+  padding: 0.75rem 1.5rem;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
