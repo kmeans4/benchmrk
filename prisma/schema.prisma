@@ -15,7 +15,7 @@ datasource db {
 
 model Model {
   id                String   @id @default(cuid())
-  name              String
+  name              String   @unique
   provider          String
   releaseDate       DateTime?
   contextWindow     Int?     // in tokens
@@ -44,7 +44,7 @@ model Model {
 
 model Benchmark {
   id                String   @id @default(cuid())
-  name              String
+  name              String   @unique
   category          String
   skillArea         SkillArea @relation(fields: [skillAreaId], references: [id])
   skillAreaId       String
@@ -129,7 +129,7 @@ model Category {
 
 model Source {
   id                String   @id @default(cuid())
-  name              String   // e.g., "LMSys Arena", "Hugging Face Leaderboard"
+  name              String   @unique // e.g., "LMSys Arena", "Hugging Face Leaderboard"
   url               String?
   reliability       Reliability @default(Unknown)
   isOfficial        Boolean  @default(false) // from model provider directly
