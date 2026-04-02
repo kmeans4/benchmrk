@@ -2,7 +2,7 @@
 
 import { memo, useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { cn, normalizeScore, getScoreColor, formatScore } from '@/lib/utils'
+import { cn, formatScore, getScoreColor, normalizeScore } from '@/lib/utils'
 import { ScoreDisplayMode } from '@/types/benchmark'
 
 interface ScoreCellProps {
@@ -30,22 +30,19 @@ export const ScoreCell = memo(function ScoreCell({
   )
 
   const color = getScoreColor(normalized)
+  const sharedClasses = cn(
+    'relative flex h-11 w-full items-center justify-center overflow-hidden rounded-xl border border-white/8 px-2 font-mono text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-sm',
+    className
+  )
 
-  // Value display mode
   if (displayMode === 'value') {
     return (
-      <div
-        className={cn(
-          'flex items-center justify-center h-full px-2 py-1 rounded-md font-mono text-sm',
-          'bg-white/5 border border-white/10',
-          className
-        )}
-        style={{ color }}
-      >
+      <div className={cn(sharedClasses, 'bg-white/[0.04]')} style={{ borderColor: `${color}22` }}>
         <motion.span
-          initial={{ scale: 1.1, opacity: 0.8 }}
+          initial={{ scale: 1.06, opacity: 0.8 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+          style={{ color }}
         >
           {formatScore(value)}
         </motion.span>
@@ -53,17 +50,14 @@ export const ScoreCell = memo(function ScoreCell({
     )
   }
 
-  // Heatmap mode
   if (displayMode === 'heatmap') {
     return (
       <div
-        className={cn(
-          'flex items-center justify-center h-full px-2 py-1 rounded-md font-mono text-sm',
-          className
-        )}
+        className={sharedClasses}
         style={{
-          backgroundColor: `${color}20`,
-          border: `1px solid ${color}40`,
+          color,
+          background: `linear-gradient(180deg, ${color}26 0%, ${color}18 100%)`,
+          borderColor: `${color}44`,
         }}
       >
         {formatScore(value)}
@@ -71,49 +65,42 @@ export const ScoreCell = memo(function ScoreCell({
     )
   }
 
-  // Bars mode
   if (displayMode === 'bars') {
     return (
-      <div
-        className={cn(
-          'relative flex items-center h-full px-2 py-1 rounded-md',
-          className
-        )}
-      >
-        {/* Background bar */}
-        <div className="absolute inset-0 bg-white/5 rounded-md overflow-hidden">
+      <div className={cn(sharedClasses, 'justify-start bg-white/[0.04]')}>
+        <div className="absolute inset-0 overflow-hidden rounded-xl">
+          <div className="absolute inset-0 bg-white/[0.03]" />
           <motion.div
-            className="h-full"
+            className="absolute inset-y-0 left-0"
             initial={{ width: 0 }}
-            animate={{ width: `${normalized * 100}%` }}
-            transition={{ duration: 0.4 }}
-            style={{ backgroundColor: color }}
+            animate={{ width: `${Math.max(normalized, 0.06) * 100}%` }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
+            style={{ background: `linear-gradient(90deg, ${color}55 0%, ${color}20 100%)` }}
           />
         </div>
-        {/* Value on top */}
-        <span className="relative z-10 font-mono text-sm" style={{ color }}>
+        <span className="relative z-10 mx-auto" style={{ color }}>
           {formatScore(value)}
         </span>
       </div>
     )
   }
 
-  // Sparkline mode (simplified - would need trend data)
   if (displayMode === 'sparkline') {
     return (
-      <div className={cn('flex items-center justify-center h-full px-2', className)}>
-        <svg width="60" height="20" viewBox="0 0 60 20">
+      <div className={cn(sharedClasses, 'justify-between bg-white/[0.04] px-2')}>
+        <svg width="60" height="20" viewBox="0 0 60 20" className="shrink-0">
           <motion.path
-            d="M0,15 Q15,10 30,12 T60,8"
+            d="M2,15 C10,11 18,6 28,8 C38,10 45,4 58,6"
             fill="none"
             stroke={color}
             strokeWidth="1.5"
+            strokeLinecap="round"
             initial={{ pathLength: 0 }}
             animate={{ pathLength: 1 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
           />
         </svg>
-        <span className="ml-1 font-mono text-sm" style={{ color }}>
+        <span className="text-xs" style={{ color }}>
           {formatScore(value)}
         </span>
       </div>
@@ -127,8 +114,7 @@ export function EmptyScoreCell({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'flex items-center justify-center h-full px-2 py-1',
-        'text-white/20 font-mono text-sm',
+        'flex h-11 w-full items-center justify-center rounded-xl border border-dashed border-white/6 bg-white/[0.02] px-2 font-mono text-sm text-white/20',
         className
       )}
     >

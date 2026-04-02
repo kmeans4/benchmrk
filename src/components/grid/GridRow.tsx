@@ -1,10 +1,9 @@
 'use client'
 
-import { memo, useMemo } from 'react'
-import { motion } from 'framer-motion'
-import { cn, formatParams, getHostingBadgeColor, getLicenseBadgeColor } from '@/lib/utils'
-import { Model, Benchmark, ScoreMap, ScoreDisplayMode } from '@/types/benchmark'
-import { ScoreCell, EmptyScoreCell } from './ScoreCell'
+import { memo } from 'react'
+import { cn, formatParams } from '@/lib/utils'
+import { Benchmark, Model, ScoreDisplayMode, ScoreMap } from '@/types/benchmark'
+import { EmptyScoreCell, ScoreCell } from './ScoreCell'
 
 interface GridRowProps {
   model: Model
@@ -14,6 +13,23 @@ interface GridRowProps {
   scoreRanges: { [benchmarkId: string]: { min: number; max: number } }
   onClick?: () => void
   isSelected?: boolean
+  modelColumnWidth?: number
+  benchmarkColumnWidth?: number
+}
+
+function formatHostingType(type: Model['hostingType']) {
+  if (type === 'CloudOnly') return 'Cloud'
+  if (type === 'LocalOnly') return 'Local'
+  if (type === 'Both') return 'Hybrid'
+  return type
+}
+
+function formatLicenseType(type: Model['licenseType']) {
+  if (type === 'OpenWeights') return 'Open'
+  if (type === 'Proprietary') return 'Closed'
+  if (type === 'CommercialAllowed') return 'Commercial'
+  if (type === 'ResearchOnly') return 'Research'
+  return type
 }
 
 export const GridRow = memo(function GridRow({
@@ -23,60 +39,51 @@ export const GridRow = memo(function GridRow({
   displayMode,
   scoreRanges,
   onClick,
-  isSelected,
+  isSelected = false,
+  modelColumnWidth = 220,
+  benchmarkColumnWidth = 120,
 }: GridRowProps) {
-  const modelScores = useMemo(() => scores[model.id] || {}, [scores, model.id])
+  const modelScores = scores[model.id] || {}
 
   return (
-    <motion.div
-      layoutId={`model-row-${model.id}`}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.2 }}
+    <div
       className={cn(
-        'group flex border-b border-white/10 hover:bg-white/5 transition-colors cursor-pointer',
-        isSelected && 'bg-cyan-500/10'
+        'group flex min-w-fit border-b border-white/5 transition-all duration-200',
+        'hover:bg-white/[0.035] hover:shadow-[0_0_28px_rgba(6,182,212,0.08)]',
+        onClick && 'cursor-pointer',
+        isSelected && 'bg-cyan-500/[0.08] shadow-[0_0_28px_rgba(6,182,212,0.12)]'
       )}
-      style={{ height: '52px' }}
+      style={{ minHeight: 76 }}
       onClick={onClick}
     >
-      {/* Model Column (sticky, 220px) */}
-      <div className="sticky left-0 z-10 w-[220px] min-w-[220px] flex items-center px-3 bg-[#0a0a0f] group-hover:bg-[#0a0a0f]/90 backdrop-blur-sm border-r border-white/10">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="font-medium text-white truncate">{model.name}</span>
+      <div
+        className={cn(
+          'sticky left-0 z-20 border-r border-white/10 px-4 py-3 backdrop-blur-xl transition-colors',
+          isSelected ? 'bg-[#101420]/95' : 'bg-[#0b0b10]/92 group-hover:bg-[#10131c]/95'
+        )}
+        style={{ width: modelColumnWidth, minWidth: modelColumnWidth }}
+      >
+        <div className="flex h-full flex-col justify-center gap-2">
+          <div className="space-y-1">
+            <p className="truncate text-sm font-semibold text-white">{model.name}</p>
+            <p className="truncate text-xs text-white/45">{model.provider}</p>
           </div>
-          <div className="flex items-center gap-1 mt-0.5">
-            {/* Provider badge */}
-            <span className="text-xs text-white/60 truncate">{model.provider}</span>
-            {/* Hosting badge */}
-            <span
-              className={cn(
-                'text-[10px] px-1.5 py-0.5 rounded border',
-                getHostingBadgeColor(model.hostingType)
-              )}
-            >
-              {model.hostingType === 'CloudOnly' ? 'Cloud' : model.hostingType === 'LocalOnly' ? 'Local' : 'Both'}
+
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-cyan-200">
+              {formatHostingType(model.hostingType)}
             </span>
-            {/* License badge */}
-            <span
-              className={cn(
-                'text-[10px] px-1.5 py-0.5 rounded border',
-                getLicenseBadgeColor(model.licenseType)
-              )}
-            >
-              {model.licenseType === 'OpenWeights' ? 'Open' : model.licenseType === 'Proprietary' ? 'Prop' : model.licenseType}
+            <span className="rounded-full border border-white/10 bg-white/[0.05] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.16em] text-white/55">
+              {formatLicenseType(model.licenseType)}
             </span>
-          </div>
-          <div className="text-[10px] text-white/40 mt-0.5">
-            {formatParams(model.parameterCount)}
+            <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/30">
+              {formatParams(model.parameterCount)}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Benchmark Columns (scrollable) */}
-      <div className="flex-1 flex overflow-x-auto">
+      <div className="flex">
         {benchmarks.map((benchmark) => {
           const scoreValue = modelScores[benchmark.id]
           const range = scoreRanges[benchmark.id]
@@ -84,7 +91,8 @@ export const GridRow = memo(function GridRow({
           return (
             <div
               key={benchmark.id}
-              className="flex-shrink-0 w-[120px] min-w-[120px] flex items-center justify-center border-r border-white/5"
+              className="flex shrink-0 items-center justify-center border-r border-white/5 px-2 py-2"
+              style={{ width: benchmarkColumnWidth, minWidth: benchmarkColumnWidth, maxWidth: benchmarkColumnWidth }}
             >
               {scoreValue !== undefined && range ? (
                 <ScoreCell
@@ -95,14 +103,15 @@ export const GridRow = memo(function GridRow({
                   scoreInterpretation={benchmark.scoreInterpretation}
                   minScore={range.min}
                   maxScore={range.max}
+                  className="w-full"
                 />
               ) : (
-                <EmptyScoreCell />
+                <EmptyScoreCell className="w-full" />
               )}
             </div>
           )
         })}
       </div>
-    </motion.div>
+    </div>
   )
 })

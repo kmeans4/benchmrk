@@ -1,21 +1,24 @@
 'use client'
 
 import { useMemo, useRef } from 'react'
+import { motion } from 'framer-motion'
 import { useVirtualizer } from '@tanstack/react-virtual'
-import { AnimatePresence } from 'framer-motion'
-import { useBenchmarkStore, selectFilteredModels, selectVisibleBenchmarks, selectScoreRange } from '@/store/benchmarkStore'
+import {
+  selectFilteredModels,
+  selectScoreRange,
+  selectVisibleBenchmarks,
+  useBenchmarkStore,
+} from '@/store/benchmarkStore'
 import { GridHeader } from './GridHeader'
 import { GridRow } from './GridRow'
-import { cn } from '@/lib/utils'
 
-interface BenchmarkGridProps {
-  className?: string
-}
+const MODEL_COLUMN_WIDTH = 220
+const BENCHMARK_COLUMN_WIDTH = 120
+const ROW_HEIGHT = 76
 
-export function BenchmarkGrid({ className }: BenchmarkGridProps) {
+export function BenchmarkGrid() {
   const parentRef = useRef<HTMLDivElement>(null)
 
-  // Get state from store
   const {
     models,
     benchmarks,
@@ -23,20 +26,20 @@ export function BenchmarkGrid({ className }: BenchmarkGridProps) {
     filters,
     sort,
     scoreDisplay,
+    activeModel,
+    clearFilters,
     setSortModel,
     setActiveModel,
-    activeModel,
   } = useBenchmarkStore()
 
-  // Derived data (memoized)
   const filteredModels = useMemo(
     () => selectFilteredModels(models, filters, scores),
     [models, filters, scores]
   )
 
   const visibleBenchmarks = useMemo(
-    () => selectVisibleBenchmarks(benchmarks, filters, scores, models),
-    [benchmarks, filters, scores, models]
+    () => selectVisibleBenchmarks(benchmarks, filters, scores, filteredModels),
+    [benchmarks, filters, scores, filteredModels]
   )
 
   const scoreRanges = useMemo(
@@ -44,7 +47,6 @@ export function BenchmarkGrid({ className }: BenchmarkGridProps) {
     [scores, visibleBenchmarks]
   )
 
-  // Sort models
   const sortedGrid = useMemo(() => {
     const sorted = [...filteredModels]
 
@@ -52,21 +54,21 @@ export function BenchmarkGrid({ className }: BenchmarkGridProps) {
       sorted.sort((a, b) => {
         const aScores = Object.values(scores[a.id] || {})
         const bScores = Object.values(scores[b.id] || {})
-        const aAvg = aScores.length ? aScores.reduce((s, v) => s + v, 0) / aScores.length : 0
-        const bAvg = bScores.length ? bScores.reduce((s, v) => s + v, 0) / bScores.length : 0
+        const aAvg = aScores.length > 0 ? aScores.reduce((sum, value) => sum + value, 0) / aScores.length : 0
+        const bAvg = bScores.length > 0 ? bScores.reduce((sum, value) => sum + value, 0) / bScores.length : 0
         return sort.modelSortDir === 'desc' ? bAvg - aAvg : aAvg - bAvg
       })
     } else if (sort.modelSortBy === 'totalScore') {
       sorted.sort((a, b) => {
-        const aTotal = Object.values(scores[a.id] || {}).reduce((s, v) => s + v, 0)
-        const bTotal = Object.values(scores[b.id] || {}).reduce((s, v) => s + v, 0)
+        const aTotal = Object.values(scores[a.id] || {}).reduce((sum, value) => sum + value, 0)
+        const bTotal = Object.values(scores[b.id] || {}).reduce((sum, value) => sum + value, 0)
         return sort.modelSortDir === 'desc' ? bTotal - aTotal : aTotal - bTotal
       })
     } else if (sort.modelSortBy === 'releaseDate') {
       sorted.sort((a, b) => {
-        const aDate = a.releaseDate ? new Date(a.releaseDate).getTime() : 0
-        const bDate = b.releaseDate ? new Date(b.releaseDate).getTime() : 0
-        return sort.modelSortDir === 'desc' ? bDate - aDate : aDate - bDate
+        const aTime = a.releaseDate ? new Date(a.releaseDate).getTime() : 0
+        const bTime = b.releaseDate ? new Date(b.releaseDate).getTime() : 0
+        return sort.modelSortDir === 'desc' ? bTime - aTime : aTime - bTime
       })
     } else if (sort.modelSortBy === 'params') {
       sorted.sort((a, b) => {
@@ -74,8 +76,7 @@ export function BenchmarkGrid({ className }: BenchmarkGridProps) {
         const bParams = b.parameterCount ? Number(b.parameterCount) : 0
         return sort.modelSortDir === 'desc' ? bParams - aParams : aParams - bParams
       })
-    } else {
-      // Sort by specific benchmark
+    } else if (sort.modelSortBy) {
       sorted.sort((a, b) => {
         const aScore = scores[a.id]?.[sort.modelSortBy] || 0
         const bScore = scores[b.id]?.[sort.modelSortBy] || 0
@@ -86,87 +87,91 @@ export function BenchmarkGrid({ className }: BenchmarkGridProps) {
     return sorted
   }, [filteredModels, scores, sort])
 
-  // Virtualization
+  const currentBenchmarkSort = visibleBenchmarks.some((benchmark) => benchmark.id === sort.modelSortBy)
+    ? sort.modelSortBy
+    : undefined
+
+  const contentWidth = MODEL_COLUMN_WIDTH + visibleBenchmarks.length * BENCHMARK_COLUMN_WIDTH
+
   const virtualizer = useVirtualizer({
     count: sortedGrid.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 52,
-    overscan: 10,
+    estimateSize: () => ROW_HEIGHT,
+    overscan: 8,
   })
 
-  const handleSort = (benchmarkId: string) => {
-    setSortModel(benchmarkId)
-  }
-
-  const handleRowClick = (modelId: string) => {
-    setActiveModel(modelId === activeModel ? null : modelId)
+  if (sortedGrid.length === 0) {
+    return (
+      <div className="flex flex-1 items-center justify-center px-6 py-16">
+        <div className="max-w-md rounded-[28px] border border-white/10 bg-white/[0.04] p-8 text-center shadow-[0_12px_48px_rgba(0,0,0,0.4)] backdrop-blur-xl">
+          <p className="text-lg font-semibold text-white">No models match the current filters</p>
+          <p className="mt-2 text-sm text-white/50">
+            Clear the active filters to restore the full leaderboard and benchmark coverage.
+          </p>
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="mt-5 inline-flex h-10 items-center rounded-xl border border-cyan-500/40 bg-cyan-500/18 px-4 text-sm font-medium text-cyan-100 transition-all hover:border-cyan-400/60 hover:bg-cyan-500/25"
+          >
+            Clear filters
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className={cn('flex flex-col h-full', className)}>
-      {/* Header */}
-      <GridHeader
-        benchmarks={visibleBenchmarks}
-        onSort={handleSort}
-        currentSort={sort.modelSortBy !== 'avgScore' && sort.modelSortBy !== 'totalScore' && sort.modelSortBy !== 'releaseDate' && sort.modelSortBy !== 'params' ? sort.modelSortBy : undefined}
-        sortDir={sort.modelSortDir}
-      />
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+      <div ref={parentRef} className="min-h-0 flex-1 overflow-auto">
+        <div className="min-w-full" style={{ width: contentWidth }}>
+          <GridHeader
+            benchmarks={visibleBenchmarks}
+            onSort={setSortModel}
+            currentSort={currentBenchmarkSort}
+            sortDir={sort.modelSortDir}
+            modelColumnWidth={MODEL_COLUMN_WIDTH}
+            benchmarkColumnWidth={BENCHMARK_COLUMN_WIDTH}
+          />
 
-      {/* Grid Body */}
-      <div
-        ref={parentRef}
-        className="flex-1 overflow-auto relative"
-        style={{ contain: 'strict' }}
-      >
-        <div
-          style={{
-            height: `${virtualizer.getTotalSize()}px`,
-            width: '100%',
-            position: 'relative',
-          }}
-        >
-          {virtualizer.getVirtualItems().map((virtualRow) => {
-            const model = sortedGrid[virtualRow.index]
-            return (
-              <div
-                key={model.id}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: `${virtualRow.size}px`,
-                  transform: `translateY(${virtualRow.start}px)`,
-                }}
-              >
-                <GridRow
-                  model={model}
-                  benchmarks={visibleBenchmarks}
-                  scores={scores}
-                  displayMode={scoreDisplay}
-                  scoreRanges={scoreRanges}
-                  onClick={() => handleRowClick(model.id)}
-                  isSelected={activeModel === model.id}
-                />
-              </div>
-            )
-          })}
-        </div>
+          <div
+            className="relative"
+            style={{
+              height: virtualizer.getTotalSize(),
+            }}
+          >
+            {virtualizer.getVirtualItems().map((virtualRow, index) => {
+              const model = sortedGrid[virtualRow.index]
 
-        {/* Empty state */}
-        {sortedGrid.length === 0 && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
-              <p className="text-white/60 text-lg mb-2">No models match your filters</p>
-              <button
-                onClick={() => {}}
-                className="px-4 py-2 bg-cyan-500/20 text-cyan-400 rounded-lg border border-cyan-500/30 hover:bg-cyan-500/30 transition-colors"
-              >
-                Clear Filters
-              </button>
-            </div>
+              return (
+                <motion.div
+                  key={model.id}
+                  layoutId={`model-row-${model.id}`}
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.2,
+                    ease: 'easeOut',
+                    delay: Math.min(index, 6) * 0.02,
+                  }}
+                  className="absolute left-0 top-0 w-full"
+                  style={{ transform: `translateY(${virtualRow.start}px)` }}
+                >
+                  <GridRow
+                    model={model}
+                    benchmarks={visibleBenchmarks}
+                    scores={scores}
+                    displayMode={scoreDisplay}
+                    scoreRanges={scoreRanges}
+                    onClick={() => setActiveModel(activeModel === model.id ? null : model.id)}
+                    isSelected={activeModel === model.id}
+                    modelColumnWidth={MODEL_COLUMN_WIDTH}
+                    benchmarkColumnWidth={BENCHMARK_COLUMN_WIDTH}
+                  />
+                </motion.div>
+              )
+            })}
           </div>
-        )}
+        </div>
       </div>
     </div>
   )
