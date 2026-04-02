@@ -19,9 +19,14 @@
 @media (max-width: 767px) {
   :root {
     --layout-nav-height: 4rem;
-    --layout-page-gutter: 1.25rem;
+    --layout-page-gutter: 1rem;
     --layout-section-gap: 1rem;
     --layout-shell-padding: 0.7rem;
+  }
+
+  .main-wrapper {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .logo-wrapper {
