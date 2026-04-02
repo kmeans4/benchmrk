@@ -251,12 +251,12 @@ export function FilterBar() {
           </div>
 
           <div className="flex min-w-0 flex-col gap-3 lg:min-w-[23rem] lg:items-end">
-            <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 sm:flex sm:flex-wrap sm:items-center sm:justify-end">
+            <div className="toolbar-container flex flex-wrap items-stretch gap-2 sm:items-center sm:justify-end lg:justify-end">
               <button
                 type="button"
                 onClick={() => toggleFilterPanel()}
                 className={cn(
-                  'inline-flex h-11 items-center justify-center rounded-[15px] border px-4 text-sm font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] active:scale-[0.98] sm:h-10',
+                  'action-btn inline-flex min-h-11 items-center justify-center rounded-[15px] border px-4 text-sm font-medium shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] active:scale-[0.98] sm:min-h-10',
                   isFilterPanelOpen
                     ? 'border-violet-500/50 bg-violet-500/20 text-violet-200'
                     : 'border-white/10 bg-white/[0.04] text-white/75 hover:border-white/20 hover:bg-white/[0.06] hover:text-white'
@@ -275,7 +275,7 @@ export function FilterBar() {
                 <button
                   type="button"
                   onClick={handleClearAll}
-                  className="hidden h-10 items-center justify-center rounded-[14px] px-3.5 text-sm text-white/55 active:scale-[0.98] hover:text-white sm:inline-flex"
+                  className="hidden min-h-10 items-center justify-center rounded-[14px] px-3.5 text-sm text-white/55 active:scale-[0.98] hover:text-white sm:inline-flex"
                 >
                   Clear all
                 </button>
@@ -284,7 +284,7 @@ export function FilterBar() {
               <button
                 type="button"
                 onClick={handleExport}
-                className="inline-flex h-11 items-center justify-center rounded-[15px] border border-white/10 bg-white/[0.04] px-4 text-sm text-white/75 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] active:scale-[0.98] hover:border-white/20 hover:bg-white/[0.06] hover:text-white sm:h-10"
+                className="action-btn export-csv-btn inline-flex min-h-11 items-center justify-center rounded-[15px] border border-white/10 bg-white/[0.04] px-4 text-sm text-white/75 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] active:scale-[0.98] hover:border-white/20 hover:bg-white/[0.06] hover:text-white sm:min-h-10"
               >
                 <span className="sm:hidden">Export</span>
                 <span className="hidden sm:inline">Export CSV</span>
@@ -295,20 +295,20 @@ export function FilterBar() {
               <button
                 type="button"
                 onClick={handleClearAll}
-                className="inline-flex h-10 items-center justify-center self-start rounded-[14px] px-1 text-sm text-white/55 active:scale-[0.98] hover:text-white sm:hidden"
+                className="action-btn inline-flex min-h-10 items-center justify-center self-start rounded-[14px] px-1 text-sm text-white/55 active:scale-[0.98] hover:text-white sm:hidden"
               >
                 Clear all filters
               </button>
             )}
 
-            <div className="hidden w-full gap-2 overflow-x-auto rounded-[18px] border border-white/10 bg-white/[0.04] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:flex lg:w-auto lg:min-w-[22rem] lg:justify-end">
+            <div className="filters-wrapper flex w-full flex-wrap gap-2 rounded-[18px] border border-white/10 bg-white/[0.04] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] md:p-1 lg:w-auto lg:min-w-[22rem] lg:flex-nowrap lg:justify-end">
               {DISPLAY_MODES.map((mode) => (
                 <button
                   key={mode.value}
                   type="button"
                   onClick={() => setScoreDisplay(mode.value)}
                   className={cn(
-                    'min-w-[4.5rem] flex-1 rounded-[13px] px-3 py-2.5 text-[11px] font-semibold tracking-[0.08em] whitespace-nowrap active:scale-[0.98] sm:min-w-[5rem] lg:min-w-0',
+                    'filter-btn min-w-[4.5rem] flex-1 rounded-[13px] px-3 py-2.5 text-[11px] font-semibold tracking-[0.08em] whitespace-nowrap active:scale-[0.98] sm:min-w-[5rem] lg:min-w-0',
                     scoreDisplay === mode.value
                       ? 'bg-cyan-500/18 text-cyan-200 shadow-[0_8px_18px_rgba(6,182,212,0.18)]'
                       : 'text-white/45 hover:text-white/80'
