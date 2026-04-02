@@ -1,0 +1,61 @@
+name: Weekly Benchmark Scrape
+
+on:
+  schedule:
+    # Run every Monday at 2 AM UTC
+    - cron: '0 2 * * 1'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+      
+      - name: Run Hugging Face scraper
+        run: |
+          cd scripts
+          python scrape_huggingface.py
+          mv huggingface_models.json ../data/huggingface_$(date +%Y%m%d).json || true
+      
+      - name: Run PapersWithCode scraper
+        run: |
+          cd scripts
+          python scrape_paperswithcode.py
+          mv paperswithcode_*.json ../data/ || true
+      
+      - name: Run LMSys scraper
+        run: |
+          cd scripts
+          python scrape_lmsys.py
+          mv lmsys_*.json ../data/ || true
+      
+      - name: Upload scraped data as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: scraped-data-${{ github.run_id }}
+          path: data/*.json
+          retention-days: 30
+      
+      - name: Create PR with new data (optional)
+        # This is a placeholder - you'd need to add logic to commit and open PR
+        run: |
+          echo "Data scraped successfully!"
+          echo "Next step: Import data into Neon database"
+          # git config --global user.name "GitHub Actions"
+          # git config --global user.email "actions@github.com"
+          # git add data/
+          # git commit -m "chore: weekly benchmark scrape $(date +%Y-%m-%d)"
+          # git push origin main
