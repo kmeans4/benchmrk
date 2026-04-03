@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
+import { getSeedData } from '@/lib/seedData'
 import { Model, Benchmark, ScoreMap, FilterState, SortState, ViewMode, ScoreDisplayMode, PaginationState } from '@/types/benchmark'
 
 type ArrayFilterKey = {
@@ -84,10 +85,12 @@ const defaultSort: SortState = {
   benchmarkSortBy: 'coverage',
 }
 
+const seedData = getSeedData()
+
 const initialState: Omit<BenchmarkStore, 'setData' | 'setFilter' | 'clearFilters' | 'removeFilterValue' | 'setSortModel' | 'setSortBenchmark' | 'setViewMode' | 'setActiveModel' | 'toggleCompare' | 'clearCompare' | 'toggleFilterPanel' | 'setScoreDisplay' | 'setPagination'> = {
-  models: [],
-  benchmarks: [],
-  scores: {},
+  models: seedData.models,
+  benchmarks: seedData.benchmarks,
+  scores: seedData.scores,
   filters: defaultFilters,
   sort: defaultSort,
   viewMode: 'grid',

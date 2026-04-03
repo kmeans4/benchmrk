@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { BenchmrkProvider } from "@/components/BenchmrkProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,9 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans bg-[#0a0a0f] text-white">
-        <BenchmrkProvider>
-          {children}
-        </BenchmrkProvider>
+        {children}
       </body>
     </html>
   );
